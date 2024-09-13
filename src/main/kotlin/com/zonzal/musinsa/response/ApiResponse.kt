@@ -1,7 +1,7 @@
 package com.zonzal.musinsa.response
 
 data class ApiResponse<T> (
-    val message: String? = "",
+    val message: String? = "success",
     val body: T? = null
 ) {
     companion object {

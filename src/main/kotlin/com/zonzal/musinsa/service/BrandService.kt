@@ -3,22 +3,28 @@ package com.zonzal.musinsa.service
 import com.zonzal.musinsa.domain.Brand
 import com.zonzal.musinsa.domain.BrandData
 import com.zonzal.musinsa.repository.BrandRepository
+import com.zonzal.musinsa.response.BrandDataResponse
 import org.springframework.stereotype.Service
 
 @Service
 class BrandService(private val brandRepository: BrandRepository) {
-    fun save(brand: BrandData): Brand {
-        return brandRepository.save(Brand(null, brand.name))
+    fun save(brandData: BrandData): BrandDataResponse {
+        val response = brandRepository.save(Brand(brandData))
+        return BrandDataResponse(response)
     }
 
     fun delete(brandId: Long) {
-        return brandRepository.deleteById(brandId)
+        brandRepository.deleteById(brandId)
     }
 
-    fun update(brand: Brand): Brand? {
-        if (brand.id?.let { brandRepository.existsById(it) } == true) {
-            return brandRepository.save(brand)
+    fun update(brandId: Long, brandData: BrandData): BrandDataResponse? {
+        val response = brandRepository.findById(brandId)
+        if (response.isEmpty()) {
+            return null
         }
-        return null
+
+        val brand = response.get()
+        brand.name = brandData.name
+        return BrandDataResponse(brandRepository.save(brand))
     }
 }

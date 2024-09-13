@@ -9,4 +9,9 @@ class Brand (
     val id: Long? = null,
     @Column
     var name: String
-)
+) {
+    constructor(brandData: BrandData): this (
+        null,
+        brandData.name
+    )
+}
