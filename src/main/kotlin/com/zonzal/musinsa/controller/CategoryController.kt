@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/categories")
 class CategoryController(private val productService: ProductService) {
 
-    @GetMapping("/min-max-brand-price/{categoryId}")
-    fun getMinMaxPrice(@PathVariable categoryId: Long,): ResponseEntity<ApiResponse<BrandProductResponse>> {
-        val response = productService.getMinMaxPriceProducts(categoryId)
+    @GetMapping("/min-max-brand-price/{categoryName}")
+    fun getMinMaxPrice(@PathVariable categoryName: String): ResponseEntity<ApiResponse<BrandProductResponse>> {
+        val response = productService.getMinMaxPriceProducts(categoryName)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 }

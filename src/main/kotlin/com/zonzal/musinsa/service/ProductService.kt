@@ -36,9 +36,16 @@ class ProductService(
         return productRepository.findLowestProductsSumPrice()
     }
 
-    fun getMinMaxPriceProducts(categoryId: Long): BrandProductResponse {
-        val minProduct = productRepository.findMinPriceProductByCategoryId(categoryId)
-        val maxProduct = productRepository.findMaxPriceProductByCategoryId(categoryId)
-        return BrandProductResponse(categoryId, BrandResponse(minProduct), BrandResponse(maxProduct))
+    fun getMinMaxPriceProducts(categoryName: String): BrandProductResponse? {
+        val categoryResult = categoryRepository.findByName(categoryName)
+
+        if (categoryResult.isEmpty()) {
+            return null
+        }
+
+        val category = categoryResult.get()
+        val minProduct = productRepository.findMinPriceProductByCategoryId(category.id)
+        val maxProduct = productRepository.findMaxPriceProductByCategoryId(category.id)
+        return BrandProductResponse(category.id, BrandResponse(minProduct), BrandResponse(maxProduct))
     }
 }
