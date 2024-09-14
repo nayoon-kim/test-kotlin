@@ -1,5 +1,6 @@
 package com.zonzal.musinsa.repository
 
+import com.zonzal.musinsa.domain.Brand
 import com.zonzal.musinsa.domain.Product
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -19,7 +20,7 @@ interface ProductRepository: JpaRepository<Product, Long> {
             "from product a group by a.category_id) b ", nativeQuery=true)
     fun findLowestProductsSumPrice(): Int
 
-    @Query("select brand_id " +
+    @Query("select b.brand_id " +
             "from (select a.brand_id brand_id, sum(a.price) price from product a group by a.brand_id) b " +
             "order by price limit 1", nativeQuery=true)
     fun findLowestPriceBrandId(): Long
