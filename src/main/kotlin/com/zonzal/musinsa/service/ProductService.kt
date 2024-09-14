@@ -1,11 +1,9 @@
 package com.zonzal.musinsa.service
 
+import com.zonzal.musinsa.repository.BrandRepository
 import com.zonzal.musinsa.repository.CategoryRepository
 import com.zonzal.musinsa.repository.ProductRepository
-import com.zonzal.musinsa.response.BrandProductResponse
-import com.zonzal.musinsa.response.BrandResponse
-import com.zonzal.musinsa.response.ProductResponse
-import com.zonzal.musinsa.response.ProductsResponse
+import com.zonzal.musinsa.response.*
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,14 +12,16 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val brandRepository: BrandRepository
 ) {
-    fun getLowHighCategory(): ProductsResponse {
+    fun getLowHighCategory(): BrandProductsResponse {
         val brandId = productRepository.findLowestPriceBrandId();
         val products = productRepository.findByBrandId(brandId)
         val productsPrice = productRepository.findSumPriceByBrandId(brandId)
+        val brand = brandRepository.findById(brandId)
 
-        return ProductsResponse(products.map { ProductResponse(it) }, productsPrice)
+        return BrandProductsResponse(brand.get().name, products.map { ProductResponse(it) }, productsPrice);
     }
 
     fun getLowestPriceProductsByCategory(): List<ProductResponse> {
