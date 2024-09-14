@@ -11,7 +11,7 @@ data class ProductResponse(
     constructor(product: Product): this (
         product.id,
         product.price,
-        product.brandId,
-        product.categoryId
+        product.brand.id,
+        product.category.id
     )
 }

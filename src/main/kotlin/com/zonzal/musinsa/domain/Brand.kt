@@ -6,12 +6,12 @@ import jakarta.persistence.*
 @Table(name = "brand")
 class Brand (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long,
     @Column
     var name: String
 ) {
     constructor(brandData: BrandData): this (
-        null,
+        -1,
         brandData.name
     )
 }
