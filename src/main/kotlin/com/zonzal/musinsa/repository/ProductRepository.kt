@@ -11,7 +11,7 @@ interface ProductRepository: JpaRepository<Product, Long> {
     @Query("select p.id, p.price, p.brand_id, p.category_id " +
             "from product p " +
             "join (select a.category_id, min(a.price) price from product a group by a.category_id) b " +
-            "on p.category_id = b.category_id and p.price = b.price", nativeQuery=true)
+            "on p.category_id = b.category_id and p.price = b.price order by p.category_id", nativeQuery=true)
     fun findLowestProductsGroupByCategoryId(): List<Product>
 
     @Query("select sum(b.price) " +

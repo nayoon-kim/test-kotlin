@@ -5,13 +5,13 @@ import com.zonzal.musinsa.domain.Product
 data class ProductResponse(
     val id: Long,
     val price: Int,
-    val brandId: Long?,
-    val categoryId: Long?
+    val brandName: String,
+    val categoryName: String
 ) {
     constructor(product: Product): this (
         product.id,
         product.price,
-        product.brand.id,
-        product.category.id
+        product.brand.name,
+        product.category.name
     )
 }
