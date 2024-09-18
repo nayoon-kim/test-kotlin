@@ -5,10 +5,10 @@ data class BrandPrice(
     val price: Int
 ){
     companion object {
-        fun of(brand: Brand, price: Int): BrandPrice {
+        fun of(brand: Brand, products: List<Product>): BrandPrice {
             return BrandPrice(
                 brand = brand,
-                price = price
+                price = products.sumOf { it.price }
             )
         }
     }

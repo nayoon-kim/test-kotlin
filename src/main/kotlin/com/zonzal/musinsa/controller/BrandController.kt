@@ -13,7 +13,8 @@ class BrandController(private val brandService: BrandService) {
 
     @PostMapping
     fun addBrand(@RequestBody brandData: BrandData): ResponseEntity<ApiResponse<BrandDataResponse>> {
-        return ResponseEntity.ok(ApiResponse.success(brandService.save(brandData)))
+        val result = brandService.save(brandData)
+        return ResponseEntity.ok(ApiResponse.success(result))
     }
 
     @DeleteMapping("/{brandId}")
@@ -24,6 +25,7 @@ class BrandController(private val brandService: BrandService) {
 
     @PutMapping("/{brandId}")
     fun updateBrand(@PathVariable brandId: Long, @RequestBody brandData: BrandData): ResponseEntity<ApiResponse<BrandDataResponse>> {
-        return ResponseEntity.ok(ApiResponse.success(brandService.update(brandId, brandData)))
+        val result = brandService.update(brandId, brandData)
+        return ResponseEntity.ok(ApiResponse.success(result))
     }
 }

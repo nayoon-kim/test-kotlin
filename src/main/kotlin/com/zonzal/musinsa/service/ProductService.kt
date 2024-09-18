@@ -19,7 +19,7 @@ class ProductService(
     fun getLowHighCategory(): BrandProductsResponse {
         val brands = brandRepository.findAll()
         val minPriceBrand = brands.map {
-            BrandPrice.of(it, productRepository.findSumPriceByBrand(it))
+            BrandPrice.of(it, productRepository.findAllByBrand(it))
         }.minBy { it.price }
 
         val products = productRepository.findByBrand(minPriceBrand.brand)
@@ -44,8 +44,8 @@ class ProductService(
         val category = categoryRepository.findByName(categoryName)
             ?: return BrandProductResponse.defaultResponse()
 
-        val minProduct = productRepository.findMinPriceProductByCategoryId(category.id)
-        val maxProduct = productRepository.findMaxPriceProductByCategoryId(category.id)
-        return BrandProductResponse(category.id, BrandResponse(minProduct), BrandResponse(maxProduct))
+        val minProduct = productRepository.findTopByCategoryOrderByPrice(category)
+        val maxProduct = productRepository.findTopByCategoryOrderByPriceDesc(category)
+        return BrandProductResponse(category.name, BrandResponse(minProduct), BrandResponse(maxProduct))
     }
 }
