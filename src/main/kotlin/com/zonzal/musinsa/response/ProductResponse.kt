@@ -8,10 +8,15 @@ data class ProductResponse(
     val brandName: String,
     val categoryName: String
 ) {
-    constructor(product: Product): this (
-        product.id,
-        product.price,
-        product.brand.name,
-        product.category.name
-    )
+    companion object {
+        fun from(product: Product): ProductResponse {
+            return ProductResponse(
+                id = product.id,
+                price = product.price,
+                brandName = product.brand.name,
+                categoryName = product.category.name
+            )
+        }
+    }
+
 }

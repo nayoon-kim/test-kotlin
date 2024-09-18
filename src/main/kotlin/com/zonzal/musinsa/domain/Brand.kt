@@ -5,13 +5,23 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "brand")
 class Brand (
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
     @Column
     var name: String
 ) {
-    constructor(brandData: BrandData): this (
-        -1,
-        brandData.name
-    )
+    fun updateName(name: String) {
+        this.name = name
+    }
+
+    companion object {
+        fun from(brandData: BrandData): Brand {
+            return Brand(
+                name = brandData.name,
+                id = null
+            )
+        }
+    }
 }

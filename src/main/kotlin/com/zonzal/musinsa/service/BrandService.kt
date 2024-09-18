@@ -4,27 +4,32 @@ import com.zonzal.musinsa.domain.Brand
 import com.zonzal.musinsa.domain.BrandData
 import com.zonzal.musinsa.repository.BrandRepository
 import com.zonzal.musinsa.response.BrandDataResponse
+import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class BrandService(private val brandRepository: BrandRepository) {
+class BrandService(
+    private val brandRepository: BrandRepository
+) {
+    @Transactional
     fun save(brandData: BrandData): BrandDataResponse {
-        val response = brandRepository.save(Brand(brandData))
-        return BrandDataResponse(response)
+        val brand = brandRepository.save(Brand.from(brandData))
+        return BrandDataResponse.from(brand)
     }
 
+    @Transactional
     fun delete(brandId: Long) {
         brandRepository.deleteById(brandId)
     }
 
+    @Transactional
     fun update(brandId: Long, brandData: BrandData): BrandDataResponse? {
-        val response = brandRepository.findById(brandId)
-        if (response.isEmpty()) {
-            return null
-        }
+        val brand = brandRepository.findByIdOrNull(brandId)
+            ?: return BrandDataResponse.defaultResponse()
 
-        val brand = response.get()
-        brand.name = brandData.name
-        return BrandDataResponse(brandRepository.save(brand))
+        brand.updateName(brandData.name)
+
+        return BrandDataResponse.defaultResponse()
     }
 }

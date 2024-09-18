@@ -8,5 +8,4 @@ import java.util.*
 
 @Repository
 interface BrandRepository : JpaRepository<Brand, Long> {
-    override fun findById(id: Long): Optional<Brand>
 }

@@ -1,5 +1,6 @@
 package com.zonzal.musinsa.service
 
+import com.zonzal.musinsa.domain.BrandPrice
 import com.zonzal.musinsa.repository.BrandRepository
 import com.zonzal.musinsa.repository.CategoryRepository
 import com.zonzal.musinsa.repository.ProductRepository
@@ -8,42 +9,41 @@ import com.zonzal.musinsa.response.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Transactional
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
     private val categoryRepository: CategoryRepository,
     private val brandRepository: BrandRepository
 ) {
+    @Transactional(readOnly = true)
     fun getLowHighCategory(): BrandProductsResponse {
-        val brandId = productRepository.findLowestPriceBrandId();
-        val products = productRepository.findByBrandId(brandId)
-        val productsPrice = productRepository.findSumPriceByBrandId(brandId)
-        val brand = brandRepository.findById(brandId)
+        val brands = brandRepository.findAll()
+        val minPriceBrand = brands.map {
+            BrandPrice.of(it, productRepository.findSumPriceByBrand(it))
+        }.minBy { it.price }
 
-        return BrandProductsResponse(brand.get().name, products.map { ProductResponse(it) }, productsPrice);
+        val products = productRepository.findByBrand(minPriceBrand.brand)
+
+        return BrandProductsResponse
+            .of(minPriceBrand.brand.name, products.map { ProductResponse.from(it) }, minPriceBrand.price);
     }
 
-    fun getLowestPriceProductsByCategory(): List<ProductResponse> {
-        val products = productRepository.findLowestProductsGroupByCategoryId()
-
-        return products.map {
-            ProductResponse(it)
+    @Transactional(readOnly = true)
+    fun getLowestPriceProductsByCategory(): ProductsPriceResponse {
+        val categories = categoryRepository.findAll()
+        val products = categories.map {
+            productRepository.findTopByCategoryOrderByPrice(it)
         }
+        val sum = products.sumOf { it.price }
+
+        return ProductsPriceResponse.of(products, sum)
     }
 
-    fun getLowestProductsSumPrice(): Int {
-        return productRepository.findLowestProductsSumPrice()
-    }
-
+    @Transactional(readOnly = true)
     fun getMinMaxPriceProducts(categoryName: String): BrandProductResponse? {
-        val categoryResult = categoryRepository.findByName(categoryName)
+        val category = categoryRepository.findByName(categoryName)
+            ?: return BrandProductResponse.defaultResponse()
 
-        if (categoryResult.isEmpty()) {
-            return null
-        }
-
-        val category = categoryResult.get()
         val minProduct = productRepository.findMinPriceProductByCategoryId(category.id)
         val maxProduct = productRepository.findMaxPriceProductByCategoryId(category.id)
         return BrandProductResponse(category.id, BrandResponse(minProduct), BrandResponse(maxProduct))

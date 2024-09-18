@@ -8,12 +8,15 @@ class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
+
     @Column
     var price: Int,
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     var brand: Brand,
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var category: Category,
 )

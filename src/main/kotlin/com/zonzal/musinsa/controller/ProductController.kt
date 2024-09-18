@@ -13,14 +13,13 @@ class ProductController(private val productService: ProductService) {
 
     @GetMapping("/lowest-category")
     fun getLowestPriceProductsByCategory():ResponseEntity<ApiResponse<ProductsPriceResponse>> {
-        val products = productService.getLowestPriceProductsByCategory()
-        val price = productService.getLowestProductsSumPrice()
-
-        return ResponseEntity.ok(ApiResponse.success(ProductsPriceResponse(products, price)))
+        val result = productService.getLowestPriceProductsByCategory()
+        return ResponseEntity.ok(ApiResponse.success(result))
     }
 
     @GetMapping("/low-high-category")
     fun getLowHighCategory(): ResponseEntity<ApiResponse<BrandProductsResponse>> {
-        return ResponseEntity.ok(ApiResponse.success(productService.getLowHighCategory()))
+        val result = productService.getLowHighCategory()
+        return ResponseEntity.ok(ApiResponse.success(result))
     }
 }
